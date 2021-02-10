@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <title>OCR System</title>
+</head>
+
+<body>
+<div class="container mb-4">
+    <h1 class="mb-4"> Optical character recognition system</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imgRecognitionUrlModal"
+            id="proceedFromUrlButton">
+        Proceed from url
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imgRecognitionFileModal"
+            id="proceedFromFileButton">
+        Proceed from file
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
+            id="queriesHistoryButton">
+        Get queries history
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
+            id="aboutApplicationButton">
+        About
+    </button>
+</div>
+
+<div class="container mb-4">
+    <div th:if="${error}">
+        <p class="mb-2" style="color: red">Error. Try again.</p>
+    </div>
+    <div th:if="${ocrResultContent}" style="width: 65%">
+        <h5 style="font-weight: bold">Input:</h5>
+        <img class="mb-2" th:src="${imgUrl}" style="max-height: 400px" alt="img">
+        <h5 style="font-weight: bold">OCR result:</h5>
+        <p th:text="${ocrResult}" style="text-align: justify; text-justify: inter-word;"></p>
+
+        <footer class="page-footer pt-2" style="font-size: 0.8rem">
+            <!-- Copyright -->
+            <div class="footer-copyright text-center">© 2021 Copyright:
+                <a href="https://github.com/Pozadr" target="_blank">Pozadr</a>
+            </div>
+            <!-- Copyright -->
+        </footer>
+    </div>
+</div>
+
+
+<!-- MODAL: Image recognition from URL -->
+<div class="modal fade" id="imgRecognitionUrlModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <form th:action="@{/ocr-proceed}" th:method="post">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageRecognitionUrlModalCenterTitle">Image recognition from url</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mb-4">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="urlInput">URL</label>
+                                <input type="text" class="form-control" id="urlInput" aria-describedby="formatUrlHelp"
+                                       placeholder="Url to image" name="url">
+                                <small id="formatUrlHelp" class="form-text text-muted">Use one of the formats: .png .jpg
+                                    .tif</small>
+                                <p id="getByCountryMessage" style="color: red;">
+                                    **URL input is missing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="submitFilterByCountry">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- MODAL: Image recognition from File -->
+<div class="modal fade" id="imgRecognitionFileModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <form th:action="@{/get-map-by-country}" th:method="get">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageRecognitionFileModalCenterTitle">Image recognition from file</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container mb-4">
+                        <div class="form-group">
+                            <h3></h3>
+                            <form>
+                                <div class="form-group">
+                                    <label for="formControlFile">Select file:</label>
+                                    <input type="file" class="form-control-file" id="formControlFile">
+                                    <small id="formatFileHelp" class="form-text text-muted">Use one of the formats: .png
+                                        .jpg
+                                        .tif</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="submitImgRecognitionFile">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- MODAL: About app  -->
+<div class="modal fade" id="aboutApplication" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <form>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutApplicationTitle">About</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text" style="text-align: justify; text-justify: inter-word;">
+                        Visualisation of COVID-19 data from
+                        <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">
+                            Johns Hopkins University.</a>
+                        Text
+                        <a href="https://account.mapbox.com" target="_blank">
+                            Mapbox service</a> to display the map.
+                        Use the <a href="https://leafletjs.com" target="_blank">
+                        Leaflet</a> to add markers with a&nbsp;description on the&nbsp;map.
+                        <a href="https://developers.google.com/chart/" target="_blank">
+                            Google charts.</a> were used to draw a&nbsp;graph from the&nbsp;downloaded data.
+                        <br>
+                        <br>
+                        <footer class="footer">
+                            <!-- Copyright -->
+                            <div class="footer-copyright" style="font-size: 0.8rem">
+                                Check my other projects on
+                                <a href="https://github.com/Pozadr" target="_blank"> Github/Pozadr.</a>
+                            </div>
+                            <!-- Copyright -->
+                        </footer>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+</html>

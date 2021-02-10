@@ -1,16 +1,29 @@
 package pl.pozadr.ocrsystem.model;
 
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "graphics")
 public class Graphic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "url", length = 10000)
     private String url;
+    @Column(name = "content", length = 10000)
     private String content;
 
     public Graphic() {
     }
 
-    public Graphic(String url, String content) {
-        this.url = url;
-        this.content = content;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUrl() {
@@ -29,3 +42,4 @@ public class Graphic {
         this.content = content;
     }
 }
+
