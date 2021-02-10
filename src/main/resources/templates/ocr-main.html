@@ -38,7 +38,7 @@
     </div>
     <div th:if="${ocrResultContent}" style="width: 65%">
         <h5 style="font-weight: bold">Input:</h5>
-        <img class="mb-2" th:src="${imgUrl}" style="max-height: 400px" alt="img">
+        <img class="mb-2" th:src="${imgUrl}" style="max-height: 400px" alt="img" src="">
         <h5 style="font-weight: bold">OCR result:</h5>
         <p th:text="${ocrResult}" style="text-align: justify; text-justify: inter-word;"></p>
 
@@ -75,7 +75,7 @@
                                        placeholder="Url to image" name="url">
                                 <small id="formatUrlHelp" class="form-text text-muted">Use one of the formats: .png .jpg
                                     .tif</small>
-                                <p id="getByCountryMessage" style="color: red;">
+                                <p id="ocrProceedMessage" style="color: red;">
                                     **URL input is missing.
                                 </p>
                             </div>
@@ -143,18 +143,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="text" style="text-align: justify; text-justify: inter-word;">
-                        Visualisation of COVID-19 data from
-                        <a href="https://github.com/CSSEGISandData/COVID-19" target="_blank">
-                            Johns Hopkins University.</a>
+
                         Text
-                        <a href="https://account.mapbox.com" target="_blank">
-                            Mapbox service</a> to display the map.
-                        Use the <a href="https://leafletjs.com" target="_blank">
-                        Leaflet</a> to add markers with a&nbsp;description on the&nbsp;map.
-                        <a href="https://developers.google.com/chart/" target="_blank">
-                            Google charts.</a> were used to draw a&nbsp;graph from the&nbsp;downloaded data.
-                        <br>
-                        <br>
+
                         <footer class="footer">
                             <!-- Copyright -->
                             <div class="footer-copyright" style="font-size: 0.8rem">
@@ -182,5 +173,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+<script type="text/javascript" th:src="@{/js/validation.js}"></script>
 </body>
 </html>

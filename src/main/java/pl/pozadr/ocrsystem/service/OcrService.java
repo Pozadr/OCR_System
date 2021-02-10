@@ -27,7 +27,7 @@ public class OcrService {
             ITesseract instance = new Tesseract();
             instance.setDatapath("./tessdata");
             String result = instance.doOCR(imageFile);
-            logger.info("OCR finished with result: \n" + result);
+            logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);
 
         } catch (TesseractException e) {
