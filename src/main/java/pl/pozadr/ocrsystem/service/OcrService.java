@@ -1,9 +1,11 @@
 package pl.pozadr.ocrsystem.service;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -37,6 +39,21 @@ public class OcrService {
         } catch (IOException e) {
             logger.error("Error: ImageIO: {}", Arrays.toString(e.getStackTrace()));
 
+        }
+        return Optional.empty();
+    }
+
+    public Optional<String> doOcrFile(Path pathName) {
+        try {
+            File imageFile = new File(pathName.toString());
+            ITesseract instance = new Tesseract();
+            instance.setDatapath("./tessdata");
+            String result = instance.doOCR(imageFile);
+            logger.debug("OCR finished with result: \n" + result);
+            return Optional.of(result);
+
+        } catch (TesseractException e) {
+            logger.error("Error: Tesseract OCR library: {}", e.getMessage());
         }
         return Optional.empty();
     }

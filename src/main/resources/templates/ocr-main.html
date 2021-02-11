@@ -22,10 +22,10 @@
             id="proceedFromFileButton">
         Proceed from file
     </button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
-            id="queriesHistoryButton">
-        Get queries history
-    </button>
+    <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
+       id="queriesHistoryButton" th:href="@{/ocr/history}">
+        Get application history
+    </a>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
             id="aboutApplicationButton">
         About
@@ -38,7 +38,11 @@
     </div>
     <div th:if="${ocrResultContent}" style="width: 65%">
         <h5 style="font-weight: bold">Input:</h5>
-        <img class="mb-2" th:src="${imgUrl}" style="max-height: 400px" alt="img" src="">
+        <div th:switch="${fileOrUrl}">
+            <img th:case="url" class="mb-2" th:src="@{${imgUrl}}" style="max-height: 400px" alt="img" src="">
+            <img th:case="file" class="mb-2" th:src="@{'data:image/jpeg;base64,'+${imgUrl}}" style="max-height: 400px" alt="img"
+                 src="">
+        </div>
         <h5 style="font-weight: bold">OCR result:</h5>
         <p th:text="${ocrResult}" style="text-align: justify; text-justify: inter-word;"></p>
 
@@ -57,7 +61,7 @@
 <div class="modal fade" id="imgRecognitionUrlModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
-    <form th:action="@{/ocr-proceed}" th:method="post">
+    <form th:action="@{/ocr-proceed-url}" th:method="post">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -69,16 +73,14 @@
                 <div class="modal-body">
                     <div class="container mb-4">
                         <div class="form-group">
-                            <div class="form-group">
-                                <label for="urlInput">URL</label>
-                                <input type="text" class="form-control" id="urlInput" aria-describedby="formatUrlHelp"
-                                       placeholder="Url to image" name="url">
-                                <small id="formatUrlHelp" class="form-text text-muted">Use one of the formats: .png .jpg
-                                    .tif</small>
-                                <p id="ocrProceedMessage" style="color: red;">
-                                    **URL input is missing.
-                                </p>
-                            </div>
+                            <label for="urlInput">URL</label>
+                            <input type="text" class="form-control" id="urlInput" aria-describedby="formatUrlHelp"
+                                   placeholder="Url to image" name="url">
+                            <small id="formatUrlHelp" class="form-text text-muted">Use one of the formats: .png .jpg
+                                .tif</small>
+                            <p id="ocrProceedMessage" style="color: red;">
+                                **URL input is missing.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,7 @@
 <div class="modal fade" id="imgRecognitionFileModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
-    <form th:action="@{/get-map-by-country}" th:method="get">
+    <form th:action="@{/ocr-proceed-file}" th:method="post" enctype="multipart/form-data">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -107,16 +109,11 @@
                 <div class="modal-body">
                     <div class="container mb-4">
                         <div class="form-group">
-                            <h3></h3>
-                            <form>
-                                <div class="form-group">
-                                    <label for="formControlFile">Select file:</label>
-                                    <input type="file" class="form-control-file" id="formControlFile">
-                                    <small id="formatFileHelp" class="form-text text-muted">Use one of the formats: .png
-                                        .jpg
-                                        .tif</small>
-                                </div>
-                            </form>
+                            <label for="formControlFile">Select file:</label>
+                            <input type="file" class="form-control-file" id="formControlFile" name="file">
+                            <small id="formatFileHelp" class="form-text text-muted">Use one of the formats: .png
+                                .jpg
+                                .tif</small>
                         </div>
                     </div>
                 </div>

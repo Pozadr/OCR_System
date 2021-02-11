@@ -9,33 +9,75 @@ import pl.pozadr.ocrsystem.repository.GraphicRepo;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GraphicService {
     Logger logger = LoggerFactory.getLogger(GraphicService.class);
     private final GraphicRepo graphicRepo;
+    private Graphic lastProceededGraphic;
+
 
     @Autowired
     public GraphicService(GraphicRepo graphicRepo) {
         this.graphicRepo = graphicRepo;
+        this.lastProceededGraphic = new Graphic();
+
     }
 
-
-    public Optional<Graphic> getLast() {
-        return graphicRepo.findAll().stream().max(Comparator.comparing(Graphic::getId));
+    public Graphic getLastProceededGraphic() {
+        return lastProceededGraphic;
     }
 
     public List<Graphic> getHistory() {
         return graphicRepo.findAll();
     }
 
-    public void saveGraphic(Graphic graphicToSave) {
+    public void setLastProceededGraphic(String url, String ocrResult) {
+        lastProceededGraphic.setUrl(url);
+        lastProceededGraphic.setContent(ocrResult);
+    }
+
+    public void setDb(String url, String ocrResult) {
+        Graphic saveInDbGraphic = new Graphic();
+        saveInDbGraphic.setUrl(url);
+        saveInDbGraphic.setContent(ocrResult);
+        saveGraphic(saveInDbGraphic);
+    }
+
+
+    /**
+     * Saves data ind DB and execute reduceNumberOfHistory method.
+     *
+     * @param graphicToSave - object to save in the DB from Controller.
+     */
+    private void saveGraphic(Graphic graphicToSave) {
         try {
-            Graphic saved = graphicRepo.save(graphicToSave);
+            graphicRepo.save(graphicToSave);
+            reduceNumberOfHistory();
 
         } catch (IllegalArgumentException ex) {
             logger.error(ex.getMessage());
+        }
+    }
+
+    /**
+     * Reduces maximum number of records in the DB to 10.
+     * Recursion used.
+     */
+    private void reduceNumberOfHistory() {
+        List<Graphic> allGraphic = getHistory();
+        if (allGraphic.size() <= 10) {
+            logger.debug("Number of records in db: {}", allGraphic.size());
+        } else {
+            try {
+                Long minId = allGraphic.stream()
+                        .min(Comparator.comparing(Graphic::getId)).get().getId();
+                graphicRepo.deleteById(minId);
+                logger.debug("Record with Id={} deleted.", minId);
+                reduceNumberOfHistory();
+            } catch (IllegalArgumentException ex) {
+                logger.error(ex.getMessage());
+            }
         }
     }
 
