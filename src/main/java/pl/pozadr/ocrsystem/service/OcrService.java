@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -21,7 +20,6 @@ public class OcrService {
     Logger logger = LoggerFactory.getLogger(OcrService.class);
 
     public Optional<String> doOcrUrl(String url) {
-        // File imageFile = new File("eurotext.tif");
         try {
             URL imageUrl = new URL(url);
             BufferedImage imageFile = ImageIO.read(imageUrl);
@@ -31,7 +29,6 @@ public class OcrService {
             String result = instance.doOCR(imageFile);
             logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);
-
         } catch (TesseractException e) {
             logger.error("Error: Tesseract OCR library: {}", e.getMessage());
         } catch (MalformedURLException e) {
@@ -43,9 +40,8 @@ public class OcrService {
         return Optional.empty();
     }
 
-    public Optional<String> doOcrFile(Path pathName) {
+    public Optional<String> doOcrFile(File imageFile) {
         try {
-            File imageFile = new File(pathName.toString());
             ITesseract instance = new Tesseract();
             instance.setDatapath("./tessdata");
             String result = instance.doOCR(imageFile);

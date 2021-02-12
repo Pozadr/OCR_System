@@ -36,7 +36,24 @@
     <div th:if="${error}">
         <p class="mb-2" style="color: red">Error. Try again.</p>
     </div>
+    <div th:if="${ocrResultContent}" style="width: 65%">
+        <h5 style="font-weight: bold">Input:</h5>
+        <div th:switch="${fileOrUrl}">
+            <img th:case="url" class="mb-2" th:src="@{${imgUrl}}" style="max-height: 400px" alt="img" src="">
+            <img th:case="file" class="mb-2" th:src="@{'data:image/jpeg;base64,'+${imgUrl}}" style="max-height: 400px" alt="img"
+                 src="">
+        </div>
+        <h5 style="font-weight: bold">OCR result:</h5>
+        <p th:text="${ocrResult}" style="text-align: justify; text-justify: inter-word;"></p>
 
+        <footer class="page-footer pt-2" style="font-size: 0.8rem">
+            <!-- Copyright -->
+            <div class="footer-copyright text-center">© 2021 Copyright:
+                <a href="https://github.com/Pozadr" target="_blank">Pozadr</a>
+            </div>
+            <!-- Copyright -->
+        </footer>
+    </div>
 </div>
 
 
