@@ -1,6 +1,8 @@
 package pl.pozadr.ocrsystem.model;
 
 
+import pl.pozadr.ocrsystem.config.AppConstants;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,9 +12,9 @@ public class Graphic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "url", length = 10000)
+    @Column(name = "url", length = AppConstants.MAX_DB_URL_LENGTH)
     private String url;
-    @Column(name = "content", length = 10000)
+    @Column(name = "content", length = AppConstants.MAX_DB_CONTENT_LENGTH)
     private String content;
 
     public Graphic() {

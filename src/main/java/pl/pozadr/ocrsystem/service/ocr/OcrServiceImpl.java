@@ -1,4 +1,4 @@
-package pl.pozadr.ocrsystem.service;
+package pl.pozadr.ocrsystem.service.ocr;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,21 +12,23 @@ import net.sourceforge.tess4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.pozadr.ocrsystem.config.AppConstants;
 
 import javax.imageio.ImageIO;
 
 @Service
-public class OcrService {
-    Logger logger = LoggerFactory.getLogger(OcrService.class);
-    private static final String TESSERACT_DATA_PATH = "./tessdata";
+public class OcrServiceImpl implements OcrService {
+    Logger logger = LoggerFactory.getLogger(OcrServiceImpl.class);
 
+
+    @Override
     public Optional<String> doOcrUrl(String url) {
         try {
             URL imageUrl = new URL(url);
             BufferedImage imageFile = ImageIO.read(imageUrl);
 
             ITesseract instance = new Tesseract();
-            instance.setDatapath(TESSERACT_DATA_PATH);
+            instance.setDatapath(AppConstants.TESSERACT_DATA_PATH);
             String result = instance.doOCR(imageFile);
             logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);
@@ -41,10 +43,11 @@ public class OcrService {
         return Optional.empty();
     }
 
+    @Override
     public Optional<String> doOcrFile(File imageFile) {
         try {
             ITesseract instance = new Tesseract();
-            instance.setDatapath(TESSERACT_DATA_PATH);
+            instance.setDatapath(AppConstants.TESSERACT_DATA_PATH);
             String result = instance.doOCR(imageFile);
             logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);

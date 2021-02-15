@@ -8,15 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pozadr.ocrsystem.model.Graphic;
-import pl.pozadr.ocrsystem.repository.GraphicRepo;
-import pl.pozadr.ocrsystem.service.FileService;
-import pl.pozadr.ocrsystem.service.GraphicService;
-import pl.pozadr.ocrsystem.service.OcrService;
+import pl.pozadr.ocrsystem.service.file.FileService;
+import pl.pozadr.ocrsystem.service.graphic.GraphicService;
+import pl.pozadr.ocrsystem.service.ocr.OcrService;
 import pl.pozadr.ocrsystem.utils.ExtensionValidator;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Takes user input and displays a response from the application API.
+ */
 @Controller
 public class OcrController {
     private final OcrService ocrService;
@@ -26,7 +28,7 @@ public class OcrController {
 
 
     @Autowired
-    public OcrController(OcrService ocrService, GraphicRepo graphicRepo, GraphicService graphicService, FileService fileService) {
+    public OcrController(OcrService ocrService, GraphicService graphicService, FileService fileService) {
         this.ocrService = ocrService;
         this.graphicService = graphicService;
         this.fileService = fileService;
@@ -83,7 +85,8 @@ public class OcrController {
     @PostMapping("/ocr-proceed-file")
     public String uploadFile(@RequestParam("file") MultipartFile file) {
         fileOrUrlProceeded = "file";
-        boolean isFileValid = ExtensionValidator.image(file.getOriginalFilename());
+        String filename = file.getOriginalFilename();
+        boolean isFileValid = ExtensionValidator.image(filename);
         if (isFileValid) {
             boolean isUploaded = fileService.uploadFileFromUser(file);
             if (isUploaded) {
@@ -93,7 +96,8 @@ public class OcrController {
                     fileService.deleteImageFile();
                     if (localImgBase64Opt.isPresent()) {
                         graphicService.setLastProceededGraphic(localImgBase64Opt.get(), ocrResultOpt.get());
-                        graphicService.setDb("Unknown: local file", ocrResultOpt.get());
+                        String localUrl = "Local file: " + filename;
+                        graphicService.setDb(localUrl, ocrResultOpt.get());
                         return "redirect:/ocr-result";
                     }
                 }
@@ -109,30 +113,4 @@ public class OcrController {
         return "ocr-history";
     }
 
-    /*
-    @RequestMapping("/error")
-    public String handleError(HttpServletRequest request) {
-        // get error status
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-
-        // TODO: log error details here
-
-        if (status != null) {
-            int statusCode = Integer.parseInt(status.toString());
-
-            // display specific error page
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                return "404";
-            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                return "500";
-            } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
-                return "403";
-            }
-        }
-
-        // display generic error
-        return "error";
-    }
-
-     */
 }

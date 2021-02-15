@@ -23,7 +23,7 @@
         Proceed from file
     </button>
     <a type="button" class="btn btn-primary" id="visitsHistoryButton" th:href="@{/ocr/history}" href="">
-        Get application history
+        Queries history
     </a>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutApplication"
             id="aboutApplicationButton">
@@ -32,15 +32,17 @@
 </div>
 
 <div class="container mb-4">
-    <h2 class="mb-4">Page visit history</h2>
+    <h2 class="mb-4">History of last 10 queries: </h2>
     <table class="table table-striped">
         <tr>
             <th scope="col">Number of visitor:</th>
             <th scope="col">Part of OCR result:</th>
+            <th scope="col">URL:</th>
         </tr>
-        <tr th:each="car: ${history}">
-            <td th:text="${car.getId()}"></td>
-            <td th:text="${car.getContent()}"></td>
+        <tr th:each="graphic: ${history}">
+            <td th:text="${graphic.getId()}"></td>
+            <td th:text="${graphic.getContent()}"></td>
+            <td th:text="${graphic.getUrl()}"></td>
         </tr>
     </table>
 </div>
