@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 /file
 /mem
+/uploads
 
 ### STS ###
 .apt_generated

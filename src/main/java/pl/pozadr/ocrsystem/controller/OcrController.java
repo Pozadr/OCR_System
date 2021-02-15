@@ -12,6 +12,7 @@ import pl.pozadr.ocrsystem.repository.GraphicRepo;
 import pl.pozadr.ocrsystem.service.FileService;
 import pl.pozadr.ocrsystem.service.GraphicService;
 import pl.pozadr.ocrsystem.service.OcrService;
+import pl.pozadr.ocrsystem.utils.ExtensionValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,20 +68,23 @@ public class OcrController {
     @PostMapping("/ocr-proceed-url")
     public String getOcrResultUrl(String url) {
         fileOrUrlProceeded = "url";
-        Optional<String> ocrResultOpt = ocrService.doOcrUrl(url);
-        if (ocrResultOpt.isPresent()) {
-            graphicService.setLastProceededGraphic(url, ocrResultOpt.get());
-            graphicService.setDb(url, ocrResultOpt.get());
-            return "redirect:/ocr-result";
-        } else {
-            return "redirect:/ocr-error";
+        boolean isUrlValid = ExtensionValidator.image(url);
+        if (isUrlValid) {
+            Optional<String> ocrResultOpt = ocrService.doOcrUrl(url);
+            if (ocrResultOpt.isPresent()) {
+                graphicService.setLastProceededGraphic(url, ocrResultOpt.get());
+                graphicService.setDb(url, ocrResultOpt.get());
+                return "redirect:/ocr-result";
+            }
         }
+        return "redirect:/ocr-error";
     }
 
     @PostMapping("/ocr-proceed-file")
     public String uploadFile(@RequestParam("file") MultipartFile file) {
         fileOrUrlProceeded = "file";
-        if (!file.isEmpty()) {
+        boolean isFileValid = ExtensionValidator.image(file.getOriginalFilename());
+        if (isFileValid) {
             boolean isUploaded = fileService.uploadFileFromUser(file);
             if (isUploaded) {
                 Optional<String> ocrResultOpt = ocrService.doOcrFile(fileService.getImageFile());

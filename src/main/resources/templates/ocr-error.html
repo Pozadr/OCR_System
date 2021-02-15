@@ -33,7 +33,7 @@
 
 <div class="container mb-4">
     <div th:switch="${fileOrUrl}">
-        <p th:case="file" class="mb-2" style="color: red">Error: File uploading failure. Please check your given format and try again.</p>
+        <p th:case="file" class="mb-2" style="color: red">Error: File uploading failure. Please check given format and try again.</p>
         <p th:case="url" class="mb-2" style="color: red">Error: Url uploading failure. Please check given URL and try again.</p>
     </div>
 
@@ -60,7 +60,7 @@
                             <input type="text" class="form-control" id="urlInput" aria-describedby="formatUrlHelp"
                                    placeholder="Url to image" name="url">
                             <small id="formatUrlHelp" class="form-text text-muted">Use one of the formats: .png .jpg
-                                .tif</small>
+                                .bmp</small>
                             <p id="ocrProceedMessage" style="color: red;">
                                 **URL input is missing.
                             </p>
@@ -94,9 +94,8 @@
                         <div class="form-group">
                             <label for="formControlFile">Select file:</label>
                             <input type="file" class="form-control-file" id="formControlFile" name="file">
-                            <small id="formatFileHelp" class="form-text text-muted">Use one of the formats: .png
-                                .jpg
-                                .tif</small>
+                            <small id="formatFileHelp" class="form-text text-muted">Use one of the formats: .png .jpg
+                                .bmp</small>
                         </div>
                     </div>
                 </div>
