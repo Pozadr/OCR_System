@@ -1,24 +1,18 @@
 package pl.pozadr.ocrsystem.controller;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pozadr.ocrsystem.model.Graphic;
 import pl.pozadr.ocrsystem.repository.GraphicRepo;
 import pl.pozadr.ocrsystem.service.FileService;
 import pl.pozadr.ocrsystem.service.GraphicService;
 import pl.pozadr.ocrsystem.service.OcrService;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +21,7 @@ public class OcrController {
     private final OcrService ocrService;
     private final GraphicService graphicService;
     private final FileService fileService;
-    private boolean error;
-    private String fileOrUrl;
+    private String fileOrUrlProceeded;
 
 
     @Autowired
@@ -36,83 +29,74 @@ public class OcrController {
         this.ocrService = ocrService;
         this.graphicService = graphicService;
         this.fileService = fileService;
-        this.error = false;
-        this.fileOrUrl = "url";
+        this.fileOrUrlProceeded = "";
     }
 
-    @GetMapping("ocr-main")
+
+    @GetMapping("/ocr-main")
     public String getMainPage(Model model) {
         model.addAttribute("ocrResult", "");
         model.addAttribute("imgUrl", "");
         model.addAttribute("ocrResultContent", false);
-        model.addAttribute("error", error);
 
         return "ocr-main";
     }
 
     @GetMapping("/ocr-result")
     public String displayResult(Model model) {
-        if (!error) {
-            Graphic lastProceededGraphic = graphicService.getLastProceededGraphic();
-            String content = lastProceededGraphic.getContent();
-            String url = lastProceededGraphic.getUrl();
-            model.addAttribute("ocrResult", content);
-            model.addAttribute("imgUrl", url);
-            model.addAttribute("ocrResultContent", true);
-            model.addAttribute("error", false);
-            model.addAttribute("fileOrUrl", fileOrUrl);
-        } else {
-            model.addAttribute("ocrResult", "");
-            model.addAttribute("ocrResult", "");
-            model.addAttribute("ocrResultContent", false);
-            model.addAttribute("error", true);
-        }
+        Graphic lastProceededGraphic = graphicService.getLastProceededGraphic();
+        String content = lastProceededGraphic.getContent();
+        String url = lastProceededGraphic.getUrl();
+
+        model.addAttribute("ocrResult", content);
+        model.addAttribute("imgUrl", url);
+        model.addAttribute("ocrResultContent", true);
+        model.addAttribute("fileOrUrl", fileOrUrlProceeded);
         return "ocr-result";
+    }
+
+    @GetMapping("/ocr-error")
+    public String getErrorPage(Model model) {
+        model.addAttribute("ocrResult", "");
+        model.addAttribute("imgUrl", "");
+        model.addAttribute("ocrResultContent", false);
+        model.addAttribute("fileOrUrl", fileOrUrlProceeded);
+        return "ocr-error";
     }
 
     @PostMapping("/ocr-proceed-url")
     public String getOcrResultUrl(String url) {
+        fileOrUrlProceeded = "url";
         Optional<String> ocrResultOpt = ocrService.doOcrUrl(url);
         if (ocrResultOpt.isPresent()) {
-            error = false;
-            fileOrUrl = "url";
             graphicService.setLastProceededGraphic(url, ocrResultOpt.get());
             graphicService.setDb(url, ocrResultOpt.get());
             return "redirect:/ocr-result";
         } else {
-            error = true;
-            fileOrUrl = "url";
-            return "redirect:/ocr-main";
+            return "redirect:/ocr-error";
         }
     }
 
-
     @PostMapping("/ocr-proceed-file")
-    public String uploadFile(@RequestParam("file") MultipartFile file)  {
-        if (file.isEmpty()) {
-            error = true;
-            return "redirect:/ocr-main";
-        }
-        boolean isUploaded = fileService.uploadFileFromUser(file);
-        if (isUploaded) {
-            Optional<String> ocrResultOpt = ocrService.doOcrFile(fileService.getImageFile());
-            if (ocrResultOpt.isPresent()) {
-                Optional<String> localImgBase64Opt = fileService.getImgBase64Format();
-                fileService.deleteImageFile();
-                if (localImgBase64Opt.isPresent()) {
-                    graphicService.setLastProceededGraphic(localImgBase64Opt.get(), ocrResultOpt.get());
-                    graphicService.setDb("Unknown: local file", ocrResultOpt.get());
-                    error = false;
-                    fileOrUrl = "file";
-                    return "redirect:/ocr-result";
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        fileOrUrlProceeded = "file";
+        if (!file.isEmpty()) {
+            boolean isUploaded = fileService.uploadFileFromUser(file);
+            if (isUploaded) {
+                Optional<String> ocrResultOpt = ocrService.doOcrFile(fileService.getImageFile());
+                if (ocrResultOpt.isPresent()) {
+                    Optional<String> localImgBase64Opt = fileService.getImgBase64Format();
+                    fileService.deleteImageFile();
+                    if (localImgBase64Opt.isPresent()) {
+                        graphicService.setLastProceededGraphic(localImgBase64Opt.get(), ocrResultOpt.get());
+                        graphicService.setDb("Unknown: local file", ocrResultOpt.get());
+                        return "redirect:/ocr-result";
+                    }
                 }
             }
         }
-        error = true;
-        fileOrUrl = "file";
-        return "redirect:/ocr-main";
+        return "redirect:/ocr-error";
     }
-
 
     @GetMapping("/ocr/history")
     public String getHistory(Model model) {

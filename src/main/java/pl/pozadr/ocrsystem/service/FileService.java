@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class FileService {
     Logger logger = LoggerFactory.getLogger(FileService.class);
-    private final String UPLOAD_DIR = "./uploads/";
+    private static final String UPLOAD_DIR = "./uploads/";
     private Path pathToImgFile;
 
     public boolean uploadFileFromUser(MultipartFile file) {

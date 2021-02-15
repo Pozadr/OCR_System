@@ -14,7 +14,7 @@ import java.util.List;
 public class GraphicService {
     Logger logger = LoggerFactory.getLogger(GraphicService.class);
     private final GraphicRepo graphicRepo;
-    private Graphic lastProceededGraphic;
+    private final Graphic lastProceededGraphic;
 
 
     @Autowired

@@ -13,7 +13,7 @@
 
 <body>
 <div class="container mb-4">
-    <h1 class="mb-4"> Optical character recognition system</h1>
+    <h1 class="mb-4">Optical character recognition system</h1>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imgRecognitionUrlModal"
             id="proceedFromUrlButton">
         Proceed from url
@@ -31,6 +31,19 @@
     </button>
 </div>
 
+<div class="container mb-4">
+    <h2 class="mb-4">Page visit history</h2>
+    <table class="table table-striped">
+        <tr>
+            <th scope="col">Number of visitor:</th>
+            <th scope="col">Part of OCR result:</th>
+        </tr>
+        <tr th:each="car: ${history}">
+            <td th:text="${car.getId()}"></td>
+            <td th:text="${car.getContent()}"></td>
+        </tr>
+    </table>
+</div>
 
 
 <!-- MODAL: Image recognition from URL -->

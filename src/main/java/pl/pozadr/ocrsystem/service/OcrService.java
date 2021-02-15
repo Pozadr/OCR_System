@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 @Service
 public class OcrService {
     Logger logger = LoggerFactory.getLogger(OcrService.class);
+    private static final String TESSERACT_DATA_PATH = "./tessdata";
 
     public Optional<String> doOcrUrl(String url) {
         try {
@@ -25,7 +26,7 @@ public class OcrService {
             BufferedImage imageFile = ImageIO.read(imageUrl);
 
             ITesseract instance = new Tesseract();
-            instance.setDatapath("./tessdata");
+            instance.setDatapath(TESSERACT_DATA_PATH);
             String result = instance.doOCR(imageFile);
             logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);
@@ -43,7 +44,7 @@ public class OcrService {
     public Optional<String> doOcrFile(File imageFile) {
         try {
             ITesseract instance = new Tesseract();
-            instance.setDatapath("./tessdata");
+            instance.setDatapath(TESSERACT_DATA_PATH);
             String result = instance.doOCR(imageFile);
             logger.debug("OCR finished with result: \n" + result);
             return Optional.of(result);

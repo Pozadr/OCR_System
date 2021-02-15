@@ -31,6 +31,13 @@
     </button>
 </div>
 
+<div class="container mb-4">
+    <div th:switch="${fileOrUrl}">
+        <p th:case="file" class="mb-2" style="color: red">Error: File uploading failure. Please check your given format and try again.</p>
+        <p th:case="url" class="mb-2" style="color: red">Error: Url uploading failure. Please check given URL and try again.</p>
+    </div>
+
+</div>
 
 
 <!-- MODAL: Image recognition from URL -->
