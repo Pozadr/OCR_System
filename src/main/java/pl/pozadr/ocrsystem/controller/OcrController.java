@@ -13,7 +13,6 @@ import pl.pozadr.ocrsystem.service.graphic.GraphicService;
 import pl.pozadr.ocrsystem.service.ocr.OcrService;
 import pl.pozadr.ocrsystem.validator.ExtensionValidator;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,6 +24,8 @@ public class OcrController {
     private final GraphicService graphicService;
     private final FileService fileService;
     private String fileOrUrlProceeded;
+    private Long numberOfOcrSuccess;
+    private Long numberOfSiteVisits;
 
 
     @Autowired
@@ -33,11 +34,14 @@ public class OcrController {
         this.graphicService = graphicService;
         this.fileService = fileService;
         this.fileOrUrlProceeded = "";
+        this.numberOfOcrSuccess = 0L;
+        this.numberOfSiteVisits = 0L;
     }
 
 
     @GetMapping("/ocr-main")
     public String getMainPage(Model model) {
+        numberOfSiteVisits++;
         model.addAttribute("ocrResult", "");
         model.addAttribute("imgUrl", "");
         model.addAttribute("ocrResultContent", false);
@@ -47,6 +51,7 @@ public class OcrController {
 
     @GetMapping("/ocr-result")
     public String displayResult(Model model) {
+        numberOfOcrSuccess++;
         Graphic lastProceededGraphic = graphicService.getLastProceededGraphic();
         String content = lastProceededGraphic.getContent();
         String url = lastProceededGraphic.getUrl();
@@ -75,7 +80,6 @@ public class OcrController {
             Optional<String> ocrResultOpt = ocrService.doOcrUrl(url);
             if (ocrResultOpt.isPresent()) {
                 graphicService.setLastProceededGraphic(url, ocrResultOpt.get());
-                graphicService.setDb(url, ocrResultOpt.get());
                 return "redirect:/ocr-result";
             }
         }
@@ -96,8 +100,6 @@ public class OcrController {
                     fileService.deleteImageFile();
                     if (localImgBase64Opt.isPresent()) {
                         graphicService.setLastProceededGraphic(localImgBase64Opt.get(), ocrResultOpt.get());
-                        String localUrl = "Local file: " + filename;
-                        graphicService.setDb(localUrl, ocrResultOpt.get());
                         return "redirect:/ocr-result";
                     }
                 }
@@ -108,8 +110,8 @@ public class OcrController {
 
     @GetMapping("/ocr/history")
     public String getHistory(Model model) {
-        List<Graphic> graphicList = graphicService.getHistory();
-        model.addAttribute("history", graphicList);
+        model.addAttribute("numberOfOcrSuccess", numberOfOcrSuccess);
+        model.addAttribute("numberOfSiteVisits", numberOfSiteVisits);
         return "ocr-history";
     }
 
