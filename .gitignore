@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 /file
 /mem
-/uploads
+
 
 ### STS ###
 .apt_generated
@@ -34,3 +34,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### IMAGES ###
+/uploads/*

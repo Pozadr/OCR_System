@@ -1,4 +1,4 @@
-package pl.pozadr.ocrsystem.utils;
+package pl.pozadr.ocrsystem.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

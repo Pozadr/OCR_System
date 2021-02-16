@@ -1,4 +1,4 @@
-package pl.pozadr.ocrsystem.utils;
+package pl.pozadr.ocrsystem.validator;
 
 import pl.pozadr.ocrsystem.config.AppConstants;
 

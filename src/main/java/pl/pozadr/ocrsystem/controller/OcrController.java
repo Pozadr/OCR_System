@@ -11,7 +11,7 @@ import pl.pozadr.ocrsystem.model.Graphic;
 import pl.pozadr.ocrsystem.service.file.FileService;
 import pl.pozadr.ocrsystem.service.graphic.GraphicService;
 import pl.pozadr.ocrsystem.service.ocr.OcrService;
-import pl.pozadr.ocrsystem.utils.ExtensionValidator;
+import pl.pozadr.ocrsystem.validator.ExtensionValidator;
 
 import java.util.List;
 import java.util.Optional;

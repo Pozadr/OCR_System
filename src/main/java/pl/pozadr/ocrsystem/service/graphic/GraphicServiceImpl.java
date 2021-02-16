@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.pozadr.ocrsystem.model.Graphic;
 import pl.pozadr.ocrsystem.repository.GraphicRepo;
-import pl.pozadr.ocrsystem.utils.DbValidator;
+import pl.pozadr.ocrsystem.validator.DbValidator;
 
 import java.util.Comparator;
 import java.util.List;
