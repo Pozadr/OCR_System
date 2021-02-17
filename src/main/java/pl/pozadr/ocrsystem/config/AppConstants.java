@@ -6,6 +6,6 @@ package pl.pozadr.ocrsystem.config;
 public class AppConstants {
     public static final int MAX_DB_URL_LENGTH = 1000;
     public static final int MAX_DB_CONTENT_LENGTH = 1000;
-    public static final String TESSERACT_DATA_PATH = "/app/.apt/usr/bin/tesseract"; //"./tessdata";
+    public static final String TESSERACT_DATA_PATH = "./tessdata"; //"/app/.apt/usr/bin/tesseract";
     public static final String UPLOAD_DIR = "./uploads/";
 }
