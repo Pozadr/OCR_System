@@ -11,12 +11,6 @@ The application supports two languages: English and Polish. It is possible to ex
 It is necessary to download the [tessdata for Tesseract](https://github.com/tesseract-ocr/tessdata) in the required 
 language and add it to _./tessdata/_.
 
-### Demo
-The demo version of the application does not have the function of checking user historical queries due to user privacy.
-One user cannot check other user's queries. There is no DB implementation necessary. User can view only historical statistic:
-the number of visits on the website and number of OCR successes. Source code to demo version is on another branch
-[demo-version](https://github.com/Pozadr/OCR_System/tree/demo-version).
-
 ### Endpoint to run application locally
     localhost:8080/ocr-main
 
@@ -40,10 +34,11 @@ application.properties file:
 - Maven
 - Spring Boot 2.4.0
 - Thymeleaf
-- Bootstrap(CSS)
+- Bootstrap(HTML/CSS)
 - JQuery/JavaScript
 - Tess4J
-- Swagger 2
+- Swagger2
+- DB: H2, JPA
 
 ## Screenshots
 
